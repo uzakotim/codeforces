@@ -3,35 +3,42 @@
 #include <string>
 #include <vector>
 
-char *convertTime(const char *line)
+std::string isProductOfSomeBinaryNumbers(int number)
 {
-    int hours = 0;
-    int minutes = 0;
+    // check if the number is binary
+    std::string number_str = std::to_string(number);
+    bool isBinary = true;
+    for (int i = 0; i < number_str.length(); i++)
+    {
+        if (number_str[i] != '0' && number_str[i] != '1')
+        {
+            isBinary = false;
+        }
+    }
+    if (isBinary)
+    {
+        return "YES";
+    }
+    // create list of all binary numbers till 100000
+    std::vector<int> bins = {10, 11, 100, 101, 110, 111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111, 10000, 10001, 10010, 10011, 10100, 10101, 10110, 10111, 11000, 11001, 11010, 11011, 11100, 11101, 11110, 11111, 100000};
 
-    hours = (line[0] - '0') * 10 + (line[1] - '0');
-    minutes = (line[3] - '0') * 10 + (line[4] - '0');
-
-    std::string marker = "AM";
-    if (hours < 12)
+    // find if the number is a product of some binary numbers
+    int i = 0;
+    while (number > 1)
     {
-        marker = "AM";
+        if (bins[i] > number)
+        {
+            return "NO";
+        }
+        if (number % bins[i] == 0)
+        {
+            number = number / bins[i];
+            i = 0;
+            continue;
+        }
+        i++;
     }
-    else
-    {
-        marker = "PM";
-    }
-    // convert hours to clock format
-    if (hours == 0)
-    {
-        hours = 12;
-    }
-    else if (hours > 12)
-    {
-        hours -= 12;
-    }
-    char *new_line = new char[9];
-    sprintf(new_line, "%02d:%02d %s", hours, minutes, marker.c_str());
-    return new_line;
+    return "YES";
 }
 
 int main(int argc, char **argv)
@@ -40,16 +47,15 @@ int main(int argc, char **argv)
     std::cin >> number_of_lines;
     int n;
 
-    std::vector<std::string> lines(number_of_lines);
-    std::string line;
+    std::vector<int> numbers;
     for (int i = 0; i < number_of_lines; i++)
     {
-        std::cin >> line;
-        lines[i] = line;
+        std::cin >> n;
+        numbers.push_back(n);
     }
     for (int i = 0; i < number_of_lines; i++)
     {
-        std::cout << convertTime(lines[i].c_str()) << std::endl;
+        std::cout << isProductOfSomeBinaryNumbers(numbers[i]) << std::endl;
     }
 
     return 0;
